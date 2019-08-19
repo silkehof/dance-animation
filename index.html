@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css?family=Hepta+Slab:400,600&display=swap" rel="stylesheet">
+    <style type="text/css">
+    #image {
+        display: none;
+    }
+
+    #footer {
+        font-family: 'Hepta Slab', serif;
+        font-weight: 400;
+        font-size: 12px;
+        text-align: center;
+    }
+    </style>
+</head>
+
+<body>
+    <canvas id="canvas" width="1655" height="700"></canvas>
+    <img id="image" src="BMO.jpg">
+    <script type="text/javascript">
+    var canvas = document.getElementById('canvas');
+    var image = document.getElementById('image');
+    var ctx = canvas.getContext('2d');
+    var offset = 0;
+    var vx = 10; // speed in px per one frame 
+
+
+    var leftLeg = {
+        color: "rgb(0, 102, 102)",
+        degrees: 0,
+        directionIsClockwise: true,
+        draw: function() {
+            ctx.save();
+
+            ctx.translate(262.5, 395);
+            ctx.rotate(this.degrees * Math.PI / 180);
+
+            ctx.beginPath();
+            ctx.moveTo(-12.5, -27.5);
+            ctx.arc(-12.5, 80, 20, -(Math.PI / 180) * 90, -(Math.PI / 180) * 270, true);
+            ctx.lineTo(12.5, 85);
+            ctx.lineTo(12.5, -27.5);
+            ctx.fillStyle = this.color;
+            ctx.fill();
+
+            ctx.restore();
+        },
+        updatePosition: function() {
+            if (this.directionIsClockwise)
+                this.degrees = this.degrees + 2;
+            else
+                this.degrees = this.degrees - 2;
+
+            if (this.degrees == 60)
+                this.directionIsClockwise = false;
+
+            if (this.degrees == -16)
+                this.directionIsClockwise = true;
+        }
+    }
+
+    var rightLeg = {
+        color: "rgb(0, 102, 102)",
+        degrees: 0,
+        directionIsClockwise: true,
+        draw: function() {
+            ctx.save();
+
+            ctx.translate(410, 395);
+            ctx.rotate(this.degrees * Math.PI / 180);
+
+            ctx.beginPath();
+            ctx.moveTo(-25, -40);
+            ctx.lineTo(-25, 85);
+            ctx.arc(0, 80, 20, (Math.PI / 180) * 90, (Math.PI / 180) * 270, true);
+            ctx.lineTo(0, -40);
+            ctx.fillStyle = this.color;
+            ctx.fill();
+
+            ctx.restore();
+        },
+        updatePosition: function() {
+            if (this.directionIsClockwise)
+                this.degrees = this.degrees - 2;
+            else
+                this.degrees = this.degrees + 2;
+
+            if (this.degrees == 16)
+                this.directionIsClockwise = true;
+
+            if (this.degrees == -60)
+                this.directionIsClockwise = false;
+        }
+    }
+
+    var leftArm = {
+        color: "rgb(0, 102, 102)",
+        degrees: 0,
+        directionIsClockwise: true,
+        draw: function() {
+            ctx.save();
+
+            ctx.translate(215, 340);
+            ctx.rotate(this.degrees * Math.PI / 180);
+
+            ctx.beginPath();
+            ctx.moveTo(0, 0)
+            ctx.lineWidth = 22;
+            ctx.lineCap = 'round';
+            ctx.lineTo(-65, 90);
+            ctx.strokeStyle = this.color;
+            ctx.stroke();
+
+            ctx.restore();
+        },
+        updatePosition: function() {
+            if (this.directionIsClockwise)
+                this.degrees = this.degrees + 2;
+            else
+                this.degrees = this.degrees - 2;
+
+            if (this.degrees == 120)
+                this.directionIsClockwise = false;
+
+            if (this.degrees == -10)
+                this.directionIsClockwise = true;
+        }
+    }
+
+    var rightArm = {
+        color: "rgb(0, 102, 102)",
+        degrees: 0,
+        directionIsClockwise: true,
+        draw: function() {
+            ctx.save();
+
+            ctx.translate(445, 340);
+            ctx.rotate(this.degrees * Math.PI / 180);
+
+            ctx.beginPath();
+            ctx.moveTo(0, 0)
+            ctx.lineWidth = 22;
+            ctx.lineCap = 'round';
+            ctx.lineTo(55, 90);
+            ctx.strokeStyle = this.color;
+            ctx.stroke();
+
+            ctx.restore();
+        },
+        updatePosition: function() {
+            if (this.directionIsClockwise)
+                this.degrees = this.degrees - 2;
+            else
+                this.degrees = this.degrees + 2;
+
+            if (this.degrees == 16)
+                this.directionIsClockwise = true;
+
+            if (this.degrees == -60)
+                this.directionIsClockwise = false;
+        }
+    }
+
+    var ground = {
+        color: "black",
+        draw: function() {
+            ctx.beginPath();
+            ctx.moveTo(0, 495)
+            ctx.lineWidth = 2;
+            ctx.lineTo(canvas.width, 495);
+            ctx.strokeStyle = this.color;
+            ctx.stroke();
+        }
+    }
+
+
+    function draw() {
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.save();
+
+        ground.draw();
+
+        ctx.translate(offset, 0);
+        leftLeg.draw();
+        rightLeg.draw();
+        leftArm.draw();
+        rightArm.draw();
+
+        ctx.drawImage(image, 205, 20, 250, 375);
+
+        leftLeg.updatePosition();
+        rightLeg.updatePosition();
+        leftArm.updatePosition();
+        rightArm.updatePosition();
+
+        offset += vx;
+
+        if (offset == 1000 || offset == 0) {
+            vx = -vx;
+        }
+
+        ctx.restore();
+
+        window.requestAnimationFrame(draw);
+    }
+
+    window.requestAnimationFrame(draw);
+    </script>
+    <div id="footer">
+        <audio src="party.mp3" controls></audio>
+        <p><strong>Galaxy Station by Allerlei von Nicolai |<br>https://www.youtube.com/channel/UC_bcboyEwTxpEyM-fuCjLkA</strong><br>Music promoted by https://www.free-stock-music.com<br>
+            Creative Commons Attribution 3.0 Unported License<br>https://creativecommons.org/licenses/by/3.0/deed.en_US</p>
+    </div>
+</body>
+
+</html>
